@@ -1,12 +1,19 @@
 import axios from "axios";
-import type { MovieSearchResponse } from "../types/movie";
-import toast from "react-hot-toast";
+import type { Movie } from '../types/movie';
+
+export interface MovieSearchResponse {
+  results: Movie[];
+  page: number;
+  total_pages: number;
+  total_results: number;
+}
+
+const API_KEY = import.meta.env.VITE_API_KEY;
 
 export default async function fetchMovies(
   searchQuery: string,
   page: number
 ): Promise<MovieSearchResponse> {
-  try {
     const response = await axios.get<MovieSearchResponse>(
       'https://api.themoviedb.org/3/search/movie', 
       {
@@ -15,14 +22,11 @@ export default async function fetchMovies(
         }, 
         params: {
           query: searchQuery,
-          page: page, 
+          page: page,
+          api_key: API_KEY, 
         }
       }
     );
     
     return response.data;
-  } catch (error) {
-    toast.error('Something went wrong');
-    throw error;
   }
-}
